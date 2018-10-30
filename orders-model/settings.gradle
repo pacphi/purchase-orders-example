@@ -1,0 +1,2 @@
+rootProject.name = 'orders-model'
+enableFeaturePreview('STABLE_PUBLISHING')

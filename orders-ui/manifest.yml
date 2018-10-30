@@ -1,0 +1,10 @@
+---
+applications:
+- name: orders-ui
+  memory: 1G
+  random-route: true
+  instances: 1
+  path: build/libs/orders-ui-0.0.1-SNAPSHOT.jar
+  buildpack: java_buildpack_offline
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+
+logging:
+  level:
+    org.springframework: INFO
+    com.zaxxer.hikari: DEBUG
+    org.flywaydb: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure: 
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: full

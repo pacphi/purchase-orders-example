@@ -1,0 +1,100 @@
+buildscript {
+	ext {
+		gitPropertiesPluginVersion = '2.0.0-beta1'
+		springBootVersion = '2.0.6.RELEASE'
+		//springBootVersion = '2.1.0.RC1'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gitPropertiesPluginVersion}")
+	}
+}
+
+apply plugin: 'java-library'
+apply plugin: 'jacoco'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven-publish'
+apply plugin: 'com.gorylenko.gradle-git-properties'
+
+group = 'io.pivotal'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = 8
+
+gitProperties {
+	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+	dateFormatTimeZone = "UTC"
+	dotGitDirectory = "${project.rootDir}/.."
+}
+
+jacoco { 
+	toolVersion = "0.8.2" 
+}
+    
+jacocoTestReport {
+	reports {
+		xml.enabled = true
+		html.enabled = true
+		csv.enabled = false
+	}
+	onlyIf = {
+		true
+	}
+	doFirst {
+		executionData = files(executionData.findAll {
+			it.exists()
+		})
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+}
+
+
+dependencies {
+	api('org.springframework.boot:spring-boot-starter-validation')
+	api('com.fasterxml.jackson.core:jackson-databind')
+	testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.3.1')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+    testImplementation('org.mockito:mockito-core:2.23.0')
+    testImplementation('org.mockito:mockito-junit-jupiter:2.23.0')
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'junit', module: 'junit'
+	}
+}
+
+bootJar {
+	enabled = false
+}
+
+jar {
+	enabled = true
+	excludes = ['**/application.yml']
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+	    groupId 'io.pivotal'
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+check.dependsOn jacocoTestReport
+build.dependsOn publishToMavenLocal
