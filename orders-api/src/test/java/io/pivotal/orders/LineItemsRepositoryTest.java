@@ -23,9 +23,7 @@ import org.testcontainers.containers.OracleContainer;
 public class LineItemsRepositoryTest {
 
     private static OracleContainer oracleContainer = 
-        (OracleContainer) new OracleContainer("wnameless/oracle-xe-11g:18.04")
-            .withUsername("admin")
-            .withPassword("password");
+        (OracleContainer) new OracleContainer().withStartupTimeoutSeconds(300);
 
     @Autowired
     private OrdersRepository ordersRepo;

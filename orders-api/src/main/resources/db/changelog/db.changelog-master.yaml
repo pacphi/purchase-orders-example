@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - preConditions:
+    - runningAs:
+        username: system
+
+  - changeSet:
+      id: Create table for purchase orders
+      author: cphillipson
+      changes:
+        - createTable:
+            tableName: purchase_order
+            columns:
+              - column:
+                  name: id
+                  type: varchar2(40)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: requested_by
+                  type: varchar2(75)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ordered_by
+                  type: varchar2(75)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: supplier
+                  type: varchar2(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: remarks
+                  type: varchar2(1000)
+              - column:
+                  name: date_created
+                  type: timestamp default current_timestamp
+              - column:
+                  name: status
+                  type: varchar2(12)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: Create table for purchase order line items
+      author: cphillipson
+      changes:
+        - createTable:
+            tableName: purchase_order_line_item
+            columns:
+              - column:
+                  name: order_id
+                  type: varchar2(40)
+              - column:
+                  name: id
+                  type: varchar2(40)
+              - column:
+                  name: item_code
+                  type: varchar2(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_description
+                  type: varchar2(250)
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_price
+                  type: decimal
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_of_measure
+                  type: varchar2(3)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: Add composite primary key to purchase order line items table
+      author: cphillipson
+      changes:
+        - addPrimaryKey:
+            columnNames: order_id, id
+            constraintName: pk_purchase_order_line_item
+            tableName: purchase_order_line_item
+
+                  

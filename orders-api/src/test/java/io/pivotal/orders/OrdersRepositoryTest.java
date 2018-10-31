@@ -1,12 +1,11 @@
 package io.pivotal.orders;
 
-import java.time.Duration;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.OracleContainer;
 
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ContextConfiguration(
@@ -24,9 +24,7 @@ import org.testcontainers.containers.OracleContainer;
 public class OrdersRepositoryTest {
 
     private static OracleContainer oracleContainer = 
-        (OracleContainer) new OracleContainer("wnameless/oracle-xe-11g:18.04")
-            .withUsername("admin")
-            .withPassword("password");
+        (OracleContainer) new OracleContainer().withStartupTimeoutSeconds(300);
 
     @Autowired
     private OrdersRepository repo;

@@ -3,6 +3,8 @@ package io.pivotal.orders;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.uuid.Generators;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,14 +37,13 @@ public class LineItemsRepository {
     public LineItem findById(UUID id) {
         Assert.notNull(id, "Cannot execute findById because id was null!");
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE ID = ?";
-        return (LineItem) jdbcTemplate.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper<LineItem>());
+        return jdbcTemplate.queryForObject(sql, new Object[] { id.toString() }, new BeanPropertyRowMapper<LineItem>(LineItem.class));
     }
 
     public UUID create(LineItem lineItem) {
         Assert.notNull(lineItem, "Cannot create a new line item because lineItem must not be null!");
         Assert.isTrue(lineItem.getId() == null && lineItem.getOrderId() != null, "Cannot create a new line item because orderId must not be null and id must be null");
-        String sql = "SELECT SYS_GUID() FROM DUAL";
-        UUID newId = jdbcTemplate.queryForObject(sql, UUID.class);
+        UUID newId = Generators.timeBasedGenerator().generate();
         lineItem.id(newId);
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(lineItem);
         simpleJdbcInsert.execute(parameterSource);
@@ -52,7 +53,7 @@ public class LineItemsRepository {
     public int delete(UUID id) {
         Assert.notNull(id, "Cannot execute delete because id was null!");
         String sql = "DELETE FROM " + TABLE_NAME + " WHERE ID = ?";
-        return jdbcTemplate.update(sql, new Object[] { id });
+        return jdbcTemplate.update(sql, new Object[] { id.toString() });
     }
 
     public List<LineItem> findByOrderId(UUID orderId) {

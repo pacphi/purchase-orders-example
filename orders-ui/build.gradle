@@ -59,6 +59,19 @@ jacocoTestReport {
 	}
 }
 
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
+tasks.withType(Test) {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+    }
+}
+
 vaadin {
    version '11.0.1'
 }

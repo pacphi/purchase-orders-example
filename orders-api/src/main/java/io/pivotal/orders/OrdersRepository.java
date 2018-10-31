@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.uuid.Generators;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,14 +38,13 @@ public class OrdersRepository {
     public Order findById(UUID id) {
         Assert.notNull(id, "Cannot execute findById because id was null!");
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE ID = ?";
-        return (Order) jdbcTemplate.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper<Order>());
+        return jdbcTemplate.queryForObject(sql, new Object[] { id.toString() }, new BeanPropertyRowMapper<Order>(Order.class));
     }
 
     public UUID create(Order order) {
         Assert.notNull(order, "Cannot create a new line item because order must not be null!");
         Assert.isNull(order.getId(), "Cannot execute create new line item because id must be null");
-        String sql = "SELECT SYS_GUID() FROM DUAL";
-        UUID newId = jdbcTemplate.queryForObject(sql, UUID.class);
+        UUID newId = Generators.timeBasedGenerator().generate();
         order.id(newId);
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(order);
         simpleJdbcInsert.execute(parameterSource);
@@ -53,7 +54,7 @@ public class OrdersRepository {
     public int delete(UUID id) {
         Assert.notNull(id, "Cannot execute delete because id was null!");
         String sql = "DELETE FROM " + TABLE_NAME + " WHERE ID = ?";
-        return jdbcTemplate.update(sql, new Object[] { id });
+        return jdbcTemplate.update(sql, new Object[] { id.toString() });
     }
 
     public List<Order> findByCreatedDate(LocalDateTime dateCreated) {

@@ -2,7 +2,6 @@ package io.pivotal.orders;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "requestedBy", "orderedBy", "branch", "supplier", "remarks", "dateCreated", "status", "items" })
+@JsonPropertyOrder({ "id", "requestedBy", "orderedBy", "branch", "supplier", "remarks", "dateCreated", "status" })
 public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,8 +43,6 @@ public class Order implements Serializable {
     @NotEmpty
     @Size(max = 12)
     private String status;
-    @Size(max = 50)
-    private List<LineItem> items;
 
     public Order() {}
 
@@ -53,8 +50,7 @@ public class Order implements Serializable {
     public Order(@JsonProperty("id") UUID id, @JsonProperty("requestedBy") String requestedBy, 
         @JsonProperty("orderedBy") String orderedBy, @JsonProperty("branch") String branch, 
         @JsonProperty("supplier") String supplier, @JsonProperty("remarks") String remarks, 
-        @JsonProperty("dateCreated") LocalDateTime dateCreated, @JsonProperty("status") String status, 
-        @JsonProperty("items") List<LineItem> items) {
+        @JsonProperty("dateCreated") LocalDateTime dateCreated, @JsonProperty("status") String status) {
         this.id = id;
         this.requestedBy = requestedBy;
         this.orderedBy = orderedBy;
@@ -63,7 +59,6 @@ public class Order implements Serializable {
         this.remarks = remarks;
         this.dateCreated = dateCreated;
         this.status = status;
-        this.items = items;
     }
 
     public static Order newInstance() {
@@ -142,15 +137,6 @@ public class Order implements Serializable {
         return this;
     }
 
-    public List<LineItem> getItems() {
-        return this.items;
-    }
-
-    public Order items(List<LineItem> items) {
-        this.items = items;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -159,12 +145,12 @@ public class Order implements Serializable {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(requestedBy, order.requestedBy) && Objects.equals(orderedBy, order.orderedBy) && Objects.equals(branch, order.branch) && Objects.equals(supplier, order.supplier) && Objects.equals(remarks, order.remarks) && Objects.equals(dateCreated, order.dateCreated) && Objects.equals(status, order.status) && Objects.equals(items, order.items);
+        return Objects.equals(id, order.id) && Objects.equals(requestedBy, order.requestedBy) && Objects.equals(orderedBy, order.orderedBy) && Objects.equals(branch, order.branch) && Objects.equals(supplier, order.supplier) && Objects.equals(remarks, order.remarks) && Objects.equals(dateCreated, order.dateCreated) && Objects.equals(status, order.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, requestedBy, orderedBy, branch, supplier, remarks, dateCreated, status, items);
+        return Objects.hash(id, requestedBy, orderedBy, branch, supplier, remarks, dateCreated, status);
     }
 
 
