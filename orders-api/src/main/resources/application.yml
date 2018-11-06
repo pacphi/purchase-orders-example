@@ -21,3 +21,12 @@ management:
   info:
     git:
       mode: full
+
+---
+
+spring:
+  profiles: docker
+  datasource:
+    username: system
+    password: oracle
+    url: jdbc:oracle:thin:@//localhost:1521/xe

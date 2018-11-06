@@ -1,6 +1,7 @@
 package io.pivotal.orders;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.uuid.Generators;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -58,8 +60,13 @@ public class LineItemsRepository {
 
     public List<LineItem> findByOrderId(UUID orderId) {
         Assert.notNull(orderId, "Cannot execute findByOrderId because orderId was null!");
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        // TODO complete implementation
-        return null;
+        SqlParameterSource in = new MapSqlParameterSource().addValue("P_ORDER_ID", orderId.toString());
+        SimpleJdbcCall simpleJdbcCall = 
+            new SimpleJdbcCall(jdbcTemplate)
+                    .withProcedureName("FETCH_POLIS_BY_ORDER_ID")
+                    .useInParameterNames("P_ORDER_ID")
+                    .returningResultSet("P_RESULT", new BeanPropertyRowMapper<LineItem>(LineItem.class));
+        Map<String, Object> map = simpleJdbcCall.execute(in);
+        return (List<LineItem>) map.get("P_RESULT");
     }
 }

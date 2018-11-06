@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -38,7 +37,6 @@ public class Order implements Serializable {
     private String supplier;
     @Size(max = 1000)
     private String remarks;
-    @NotNull
     private LocalDateTime dateCreated;
     @NotEmpty
     @Size(max = 12)
@@ -63,6 +61,18 @@ public class Order implements Serializable {
 
     public static Order newInstance() {
         return new Order();
+    }
+
+    public static Order from(Order o) {
+        return Order
+            .newInstance()
+                .id(o.getId())
+                .requestedBy(o.getRequestedBy())
+                .orderedBy(o.getOrderedBy())
+                .branch(o.getBranch())
+                .supplier(o.getSupplier())
+                .remarks(o.getRemarks())
+                .status(o.getStatus());
     }
 
     public UUID getId() {
@@ -121,11 +131,6 @@ public class Order implements Serializable {
 
     public LocalDateTime getDateCreated() {
         return this.dateCreated;
-    }
-
-    public Order dateCreated(LocalDateTime dateCreated) {
-        this.dateCreated = dateCreated;
-        return this;
     }
 
     public String getStatus() {

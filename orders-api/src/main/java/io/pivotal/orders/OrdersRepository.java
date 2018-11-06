@@ -1,7 +1,8 @@
 package io.pivotal.orders;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.uuid.Generators;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -57,10 +59,15 @@ public class OrdersRepository {
         return jdbcTemplate.update(sql, new Object[] { id.toString() });
     }
 
-    public List<Order> findByCreatedDate(LocalDateTime dateCreated) {
+    public List<Order> findByCreatedDate(LocalDate dateCreated) {
         Assert.notNull(dateCreated, "Cannot execute findByCreatedDate because dateCreated was null!");
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        // TODO complete implementation
-        return null;
+        SqlParameterSource in = new MapSqlParameterSource().addValue("P_DATE_CREATED", dateCreated);
+        SimpleJdbcCall simpleJdbcCall = 
+            new SimpleJdbcCall(jdbcTemplate)
+                    .withProcedureName("FETCH_POS_BY_DATE_CREATED")
+                    .useInParameterNames("P_DATE_CREATED")
+                    .returningResultSet("P_RESULT", new BeanPropertyRowMapper<Order>(Order.class));
+        Map<String, Object> map = simpleJdbcCall.execute(in);
+        return (List<Order>) map.get("P_RESULT");
     }
 }

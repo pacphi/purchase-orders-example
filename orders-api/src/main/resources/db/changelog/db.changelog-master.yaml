@@ -86,5 +86,38 @@ databaseChangeLog:
             columnNames: order_id, id
             constraintName: pk_purchase_order_line_item
             tableName: purchase_order_line_item
-
-                  
+  - changSet:
+      id: Create stored procedure to fetch purchase orders by date_created
+      author: cphillipson
+      changes:
+        - createProcedure:
+            dbms: oracle
+            encoding: utf8
+            procedureName: fetch purchase orders by date created
+            procedureText: |-
+              create procedure fetch_pos_by_date_created (
+                p_date_created in purchase_order.date_created,
+                p_result out sys_refcursor
+              )
+              is
+              begin
+                open p_result for 
+                    select * from purchase_order where date_created <= p_date_created;
+              end;
+  - changSet:
+      id: Create stored procedure to fetch purchase order line items by order_id
+      author: cphillipson
+      changes:
+        - createProcedure:
+            encoding: utf8
+            procedureName: fetch purchase order lines items by order order id
+            procedureText: |-
+              create procedure fetch_polis_by_order_id (
+                p_order_id in purchase_order_line_item.order_id,
+                p_result out sys_refcursor
+              )
+              is
+              begin
+                open p_result for 
+                    select * from purchase_order_line_item where order_id = p_order_id;
+              end; 

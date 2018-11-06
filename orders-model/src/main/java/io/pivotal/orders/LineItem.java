@@ -19,7 +19,6 @@ public class LineItem implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull
     private UUID orderId;
     private UUID id;
     @NotEmpty
@@ -52,6 +51,18 @@ public class LineItem implements Serializable{
 
     public static LineItem newInstance() {
         return new LineItem();
+    }
+
+    public static LineItem from(LineItem li) {
+        return LineItem
+            .newInstance()
+                .orderId(li.getOrderId())
+                .id(li.getId())
+                .itemCode(li.getItemCode())
+                .itemDescription(li.getItemDescription())
+                .quantity(li.getQuantity())
+                .unitPrice(li.getUnitPrice())
+                .unitOfMeasure(li.getUnitOfMeasure());
     }
 
     public UUID getOrderId() {
