@@ -1,5 +1,6 @@
 package io.pivotal.orders;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class OrdersRepository {
 
     public List<Order> findByCreatedDate(LocalDate dateCreated) {
         Assert.notNull(dateCreated, "Cannot execute findByCreatedDate because dateCreated was null!");
-        SqlParameterSource in = new MapSqlParameterSource().addValue("P_DATE_CREATED", dateCreated);
+        SqlParameterSource in = new MapSqlParameterSource().addValue("P_DATE_CREATED", Timestamp.valueOf(dateCreated.atStartOfDay()));
         SimpleJdbcCall simpleJdbcCall = 
             new SimpleJdbcCall(jdbcTemplate)
                     .withProcedureName("FETCH_POS_BY_DATE_CREATED")

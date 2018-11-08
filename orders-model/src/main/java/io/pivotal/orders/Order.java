@@ -37,7 +37,7 @@ public class Order implements Serializable {
     private String supplier;
     @Size(max = 1000)
     private String remarks;
-    private LocalDateTime dateCreated;
+    private LocalDateTime dateCreated = LocalDateTime.now();
     @NotEmpty
     @Size(max = 12)
     private String status;
@@ -67,6 +67,7 @@ public class Order implements Serializable {
         return Order
             .newInstance()
                 .id(o.getId())
+                .dateCreated(o.getDateCreated())
                 .requestedBy(o.getRequestedBy())
                 .orderedBy(o.getOrderedBy())
                 .branch(o.getBranch())
@@ -131,6 +132,11 @@ public class Order implements Serializable {
 
     public LocalDateTime getDateCreated() {
         return this.dateCreated;
+    }
+
+    public Order dateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+        return this;
     }
 
     public String getStatus() {

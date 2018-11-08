@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +94,6 @@ public class LineItemsRepositoryTest {
     }
 
     @Test
-    @Disabled("Temporarily disabled. Liquibase is not creating stored procedure. Further research required.")
     public void canCreateLineItemThenFindByOrderId() {
         Assertions.assertEquals(0, ordersRepo.count());
         Assertions.assertEquals(0, lineItemsRepo.count());
