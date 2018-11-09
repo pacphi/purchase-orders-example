@@ -3,6 +3,7 @@ package io.pivotal.orders;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class PurchaseOrderControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper mapper;
+
     @MockBean
     private PurchaseOrdersService service;
 
@@ -69,6 +73,7 @@ public class PurchaseOrderControllerTest {
         mvc
             .perform(get(String.format("/purchaseOrders/%s", ORDER_ID.toString()))
             .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
             .andExpect(status().isNotFound());
     }
     
@@ -94,6 +99,7 @@ public class PurchaseOrderControllerTest {
             .perform(get("/purchaseOrders")
             .param("dateCreated", DATE_CREATED.toLocalDate().toString())
             .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
             .andExpect(status().isNotFound());  
     }
 
@@ -101,13 +107,15 @@ public class PurchaseOrderControllerTest {
     public void givenPurchaseOrder_whenPostPurchaseOrder_thenStatus201() throws Exception {
         UUID orderId = UUID.randomUUID();
         UUID lineItemId = UUID.randomUUID();
-        when(service.createPurchaseOrder(vendPurchaseOrder())).thenReturn(vendPurchaseOrder(orderId, lineItemId));
+        PurchaseOrder detachedPO = vendPurchaseOrder();
+        doReturn(vendPurchaseOrder(orderId, lineItemId)).when(service).createPurchaseOrder(detachedPO);
 
         mvc
             .perform(post("/purchaseOrders")
-            .content(asJsonString(vendPurchaseOrder()))
             .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(detachedPO))
             .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
             .andExpect(status().isCreated());
     }
 
@@ -118,6 +126,7 @@ public class PurchaseOrderControllerTest {
         mvc
             .perform(delete(String.format("/purchaseOrders/%s", ORDER_ID.toString()))
             .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
             .andExpect(status().isAccepted());
     }
 
@@ -183,11 +192,9 @@ public class PurchaseOrderControllerTest {
         return new PurchaseOrder(order, Arrays.asList(lineItem));
     }
 
-    private static String asJsonString(final Object obj) {
+    private String asJsonString(final Object obj) {
         try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final String jsonContent = mapper.writeValueAsString(obj);
-            return jsonContent;
+            return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException jpe) {
             throw new RuntimeException(jpe);
         }
