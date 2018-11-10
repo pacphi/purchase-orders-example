@@ -23,10 +23,23 @@ management:
       mode: full
 
 ---
-
 spring:
   profiles: docker
   datasource:
     username: system
     password: oracle
     url: jdbc:oracle:thin:@//localhost:1521/xe
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true
+
+---
+spring:
+  profiles: cloud
+
+management:
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true

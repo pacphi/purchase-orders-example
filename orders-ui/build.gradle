@@ -1,8 +1,7 @@
 buildscript {
 	ext {
 		gitPropertiesPluginVersion = '2.0.0-beta1'
-		springBootVersion = '2.0.6.RELEASE'
-		//springBootVersion = '2.1.0.RC1'
+		springBootVersion = '2.1.0.RELEASE'
 		vaadinFlowVersion ='1.0.0.M6'
 		//vaadinFlowVersion ='1.0.0.RC1'
 	}
@@ -86,6 +85,7 @@ repositories {
 
 dependencyManagement {
     imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.2.RELEASE"
     }
 }

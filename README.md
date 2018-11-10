@@ -110,7 +110,7 @@ To startup the application, execute
 We'll fire up a local Docker instance of Oracle, then start the `orders-api` 
 
 ```bash
-docker run --rm -d -p 8080:8080 -p 1521:1521 sath89/oracle-xe-11g
+docker run --rm -d -p 9080:8080 -p 1521:1521 sath89/oracle-xe-11g
 cd orders-api
 gradle bootRun -Dspring.profiles.active=docker
 ```
