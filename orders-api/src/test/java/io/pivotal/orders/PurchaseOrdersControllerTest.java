@@ -13,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,8 +36,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 
 @SpringJUnitWebConfig(OrdersApiApplication.class)
-@WebMvcTest(controllers = { PurchaseOrderController.class }, secure = false)
-public class PurchaseOrderControllerTest {
+@WebMvcTest(controllers = { PurchaseOrdersController.class }, secure = false)
+public class PurchaseOrdersControllerTest {
 
     private static final LocalDateTime DATE_CREATED = LocalDateTime.now();
     private static final UUID ORDER_ID = UUID.randomUUID();
@@ -56,7 +54,7 @@ public class PurchaseOrderControllerTest {
     @Test
     public void givenPurchaseOrders_whenGetPurchaseOrderByOrderId_thenStatus200() throws Exception {
         UUID lineItemId = UUID.randomUUID();
-        when(service.findPurchaseOrderByOrderId(ORDER_ID)).thenReturn(vendPurchaseOrder(ORDER_ID, lineItemId));
+        when(service.findPurchaseOrderByOrderId(ORDER_ID)).thenReturn(PurchaseOrderTestUtil.vendPersistentPurchaseOrder(ORDER_ID, lineItemId));
 
         mvc
             .perform(get(String.format("/purchaseOrders/%s", ORDER_ID.toString()))
@@ -79,7 +77,7 @@ public class PurchaseOrderControllerTest {
     
     @Test
     public void givenPurchaseOrders_whenGetPurchaseOrderByDateCreated_thenStatus200() throws Exception {
-        when(service.findPurchaseOrderByOrderDateCreated(DATE_CREATED.toLocalDate())).thenReturn(vendPurchaseOrders(DATE_CREATED));
+        when(service.findPurchaseOrderByOrderDateCreated(DATE_CREATED.toLocalDate())).thenReturn(PurchaseOrderTestUtil.vendPersistentPurchaseOrders(ORDER_ID, DATE_CREATED));
 
         mvc
             .perform(get("/purchaseOrders")
@@ -107,8 +105,8 @@ public class PurchaseOrderControllerTest {
     public void givenPurchaseOrder_whenPostPurchaseOrder_thenStatus201() throws Exception {
         UUID orderId = UUID.randomUUID();
         UUID lineItemId = UUID.randomUUID();
-        PurchaseOrder detachedPO = vendPurchaseOrder();
-        doReturn(vendPurchaseOrder(orderId, lineItemId)).when(service).createPurchaseOrder(detachedPO);
+        PurchaseOrder detachedPO = PurchaseOrderTestUtil.vendDetachedPurchaseOrder();
+        doReturn(PurchaseOrderTestUtil.vendPersistentPurchaseOrder(orderId, lineItemId)).when(service).createPurchaseOrder(detachedPO);
 
         mvc
             .perform(post("/purchaseOrders")
@@ -128,68 +126,6 @@ public class PurchaseOrderControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isAccepted());
-    }
-
-    private List<PurchaseOrder> vendPurchaseOrders(LocalDateTime dateCreated) {
-        Order order = 
-            new Order(ORDER_ID, "tony.stark@starkenterprises.com", "nick.fury@shield.com",
-                "AVE", "Stark Enterprises", "for Thanos", DATE_CREATED, "REQUESTED");
-        LineItem lineItem = 
-            LineItem
-                .newInstance()
-                    .id(UUID.randomUUID())
-                    .orderId(ORDER_ID)
-                    .itemCode("BERTHA")
-                    .itemDescription("Near Earth orbit Hulk buster suit of armor")
-                    .quantity(1L)
-                    .unitPrice(15000000.00)
-                    .unitOfMeasure("PC");
-        return Arrays.asList(new PurchaseOrder(order, Arrays.asList(lineItem)));
-    }
-
-    private PurchaseOrder vendPurchaseOrder(UUID orderId, UUID lineItemId) {
-        Order order = 
-            Order
-                .newInstance()
-                    .id(orderId)
-                    .requestedBy("tony.stark@starkenterprises.com")
-                    .orderedBy("nick.fury@shield.com")
-                    .branch("AVE")
-                    .supplier("Stark Enterprises")
-                    .remarks("for Thanos")
-                    .status("REQUESTED");
-        LineItem lineItem = 
-            LineItem
-                .newInstance()
-                    .id(lineItemId)
-                    .orderId(orderId)
-                    .itemCode("BERTHA")
-                    .itemDescription("Near Earth orbit Hulk buster suit of armor")
-                    .quantity(1L)
-                    .unitPrice(15000000.00)
-                    .unitOfMeasure("PC");
-        return new PurchaseOrder(order, Arrays.asList(lineItem));
-    }
-
-    private PurchaseOrder vendPurchaseOrder() {
-        Order order = 
-            Order
-                .newInstance()
-                    .requestedBy("tony.stark@starkenterprises.com")
-                    .orderedBy("nick.fury@shield.com")
-                    .branch("AVE")
-                    .supplier("Stark Enterprises")
-                    .remarks("for Thanos")
-                    .status("REQUESTED");
-        LineItem lineItem = 
-            LineItem
-                .newInstance()
-                    .itemCode("BERTHA")
-                    .itemDescription("Near Earth orbit Hulk buster suit of armor")
-                    .quantity(1L)
-                    .unitPrice(15000000.00)
-                    .unitOfMeasure("PC");
-        return new PurchaseOrder(order, Arrays.asList(lineItem));
     }
 
     private String asJsonString(final Object obj) {

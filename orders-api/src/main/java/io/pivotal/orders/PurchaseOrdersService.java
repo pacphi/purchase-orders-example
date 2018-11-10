@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 @Service
 public class PurchaseOrdersService {
@@ -31,9 +30,9 @@ public class PurchaseOrdersService {
             // TODO We could do a better job here.
             // E.g., create line items where condition is met, 
             // then capture and report on items that did not meet condition.
-            Assert.isNull(li.getOrderId(), "When creating a new purchase order each line item's orderId should be null!");
-            UUID newLineItemId = lineItemsRepo.create(li);
-            lineItems.add(LineItem.from(li).orderId(newOrderId).id(newLineItemId));
+            LineItem orderIdEnrichedLineItem = LineItem.from(li).orderId(newOrderId);
+            UUID newLineItemId = lineItemsRepo.create(orderIdEnrichedLineItem);
+            lineItems.add(LineItem.from(orderIdEnrichedLineItem).id(newLineItemId));
         });
         return new PurchaseOrder(
             Order.from(entity.getOrder().id(newOrderId)), 

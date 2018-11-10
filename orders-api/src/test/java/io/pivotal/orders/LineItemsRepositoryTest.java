@@ -48,6 +48,11 @@ public class LineItemsRepositoryTest {
     }
 
     @Test
+    public void cannotCreateLineItemBecauseItWasInvalid() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> lineItemsRepo.create(PurchaseOrderTestUtil.vendInvalidDetachedLineItem()));
+    }
+
+    @Test
     public void cannotFindLineItemBecauseIdWasNull() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> lineItemsRepo.findById(null));
     }

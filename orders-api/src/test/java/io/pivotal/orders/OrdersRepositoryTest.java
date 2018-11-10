@@ -49,7 +49,7 @@ public class OrdersRepositoryTest {
     @Test
     public void cannotCreateOrderBecauseIdWasNotNull() {
         Assertions.assertThrows(
-            IllegalArgumentException.class, () -> orderRepo.create(Order.newInstance().id(UUID.randomUUID())));
+            IllegalArgumentException.class, () -> orderRepo.create(PurchaseOrderTestUtil.vendInvalidDetachedOrder()));
     }
 
     @Test

@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-public class PurchaseOrderController {
+public class PurchaseOrdersController {
 
     private PurchaseOrdersService service;
 
     @Autowired
-    public PurchaseOrderController(PurchaseOrdersService service) {
+    public PurchaseOrdersController(PurchaseOrdersService service) {
         this.service = service;
     }
 
@@ -53,7 +53,7 @@ public class PurchaseOrderController {
     }
 
     @PostMapping("/purchaseOrders")
-    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@Valid @RequestBody PurchaseOrder candidate) {
+    public ResponseEntity<String> createPurchaseOrder(@Valid @RequestBody PurchaseOrder candidate) {
         PurchaseOrder newPurchaseOrder = service.createPurchaseOrder(candidate);
         UriComponentsBuilder ucb = UriComponentsBuilder.newInstance();
         return ResponseEntity.created(
