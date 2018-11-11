@@ -1,9 +1,10 @@
 buildscript {
 	ext {
 		gitPropertiesPluginVersion = '2.0.0-beta1'
-		springBootVersion = '2.1.0.RELEASE'
+		springBootVersion = '2.0.6.RELEASE'
+		//springBootVersion = '2.1.0.RELEASE'
 		vaadinFlowVersion ='1.0.0.M6'
-		//vaadinFlowVersion ='1.0.0.RC1'
+		//vaadinFlowVersion ='1.0.0.RC2'
 	}
 	repositories {
 		mavenCentral()
