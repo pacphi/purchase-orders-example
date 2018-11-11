@@ -2,3 +2,5 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
+  main:
+    allow-bean-definition-overriding: true

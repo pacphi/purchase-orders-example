@@ -222,6 +222,7 @@ A curated list of links to material from which you may draw insight, inspiration
 * [Oracle 12c XE Docker Image](https://hub.docker.com/r/sath89/oracle-12c/)
 * [Oracle 11g XE Docker Image](https://hub.docker.com/r/sath89/oracle-xe-11g/)
 * [Creating an Oracle DB Instance and Connecting to a Database on an Oracle DB Instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.Oracle.html)
+* [Schema Object Names and Qualifiers](https://docs.oracle.com/cd/B19306_01/server.102/b14200/sql_elements008.htm)
 * [How to Return ResultSet from Stored Procedure in Oracle?](https://www.foxinfotech.in/2018/08/how-to-return-resultset-from-stored-procedure-in-oracle.html)
 * [Using Ref Cursors To Return Recordsets](https://oracle-base.com/articles/misc/using-ref-cursors-to-return-recordsets)
 * [Is Oracle's SYS_GUID() UUID RFC 4122 compliant?](https://stackoverflow.com/questions/6505837/is-oracles-sys-guid-uuid-rfc-4122-compliant)
@@ -234,3 +235,4 @@ A curated list of links to material from which you may draw insight, inspiration
 * [Introduction to Liquibase and Managing Your Database Source Code](https://blogs.oracle.com/shay/introduction-to-liquibase-and-managing-your-database-source-code)
 * [Spring MVC @RequestMapping, @PathVariable and @RequestParams examples](https://www.journaldev.com/3358/spring-requestmapping-requestparam-pathvariable-example)
 * [Spring Boot Actuator - Production Ready Endpoints](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html#production-ready-endpoints)
+* [Spring Boot 2.1 Release Notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#spring-boot-21-release-notes)

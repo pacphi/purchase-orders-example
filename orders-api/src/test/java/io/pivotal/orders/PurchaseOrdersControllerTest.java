@@ -22,17 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @SpringJUnitWebConfig(OrdersApiApplication.class)
@@ -64,16 +56,6 @@ public class PurchaseOrdersControllerTest {
             .andExpect(jsonPath("$.order.id", is(ORDER_ID.toString())))
             .andExpect(jsonPath("$.lineItems[0].id", is(lineItemId.toString())));
     }
-
-    @Test
-    public void givenNoPurchaseOrders_whenGetPurchaseOrderByOrderId_thenStatus404() throws Exception {
-        when(service.findPurchaseOrderByOrderId(ORDER_ID)).thenThrow(EmptyResultDataAccessException.class);
-        mvc
-            .perform(get(String.format("/purchaseOrders/%s", ORDER_ID.toString()))
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
     
     @Test
     public void givenPurchaseOrders_whenGetPurchaseOrderByDateCreated_thenStatus200() throws Exception {
@@ -87,18 +69,6 @@ public class PurchaseOrdersControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("[0].order.id", is(ORDER_ID.toString())))
             .andExpect(jsonPath("[0].order.dateCreated", greaterThan(DATE_CREATED.toLocalDate().toString())));
-    }
-
-    @Test
-    public void givenNoPurchaseOrders_whenGetPurchaseOrderByDateCreated_thenStatus404() throws Exception {
-        when(service.findPurchaseOrderByOrderDateCreated(DATE_CREATED.toLocalDate())).thenThrow(EmptyResultDataAccessException.class);
-
-        mvc
-            .perform(get("/purchaseOrders")
-            .param("dateCreated", DATE_CREATED.toLocalDate().toString())
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNotFound());  
     }
 
     @Test
@@ -135,16 +105,5 @@ public class PurchaseOrdersControllerTest {
             throw new RuntimeException(jpe);
         }
     }  
-
-    @ControllerAdvice
-    static  class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
- 
-        @ExceptionHandler({ EmptyResultDataAccessException.class })
-        public ResponseEntity<Object> handleEmptyResultDataAccessException(Exception ex, WebRequest request) {
-            return new ResponseEntity<Object>(
-                "No results found matching criteria", new HttpHeaders(), HttpStatus.NOT_FOUND);
-        }
-     
-    }
 
 }
